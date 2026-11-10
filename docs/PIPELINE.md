@@ -5,6 +5,8 @@ Goal: each Friday's video is produced with free tools, so Brandon only reviews a
 ## Where it runs
 On **Brandon's Mac**, on a schedule (`launchd`). It has to run there because FreeLLMAPI only listens on `localhost:31415`, and the free voice engine runs locally too.
 
+**Voice engine:** edge-tts (Microsoft Azure Neural voices). Installed via `pip3 install --break-system-packages edge-tts`. No API key needed. Choose a voice from the list at `docs/PIPELINE.md` or run `python3 -c "import asyncio, edge_tts; asyncio.run(edge_tts.list_voices())"`.
+
 ## Steps
 
 ```
@@ -14,7 +16,7 @@ next video in plan/schedule.json
 1. write_script.py ── FreeLLMAPI ──► scripts/NN-slug.md   (DRAFT + "Claims to verify")
    │                                  └─ fact check by a Claude chat or Brandon
    ▼
-2. voice.py ── Kokoro (local, free) ──► output/slug/voice.wav
+2. voice.py ── edge-tts (Microsoft Azure Neural, free, no API key) ──► output/slug/voice.wav
 3. footage.py ── Pexels API (free) ──► output/slug/clips/ + credits.txt
 4. diagrams ── code templates (free) ──► output/slug/diagrams/
    │
@@ -32,13 +34,13 @@ Brandon watches it and schedules or publishes it
 
 | Step | File | Status |
 |---|---|---|
-| 1. Script draft | `pipeline/write_script.py` + `pipeline/llm.py` | Built; first live run on the Mac pending |
-| 2. Voice | `pipeline/voice.py` | To build: Kokoro on the Mac, 1–2 documentary voices for Brandon to choose from |
-| 3. Footage | `pipeline/footage.py` | To build: reads `[visual cues]`, pulls Pexels clips, writes photographer credits |
-| 4. Diagrams | templates | To build: anchor/bolt, bridge, dam, pressure vessel. Start from `tools/render_coldopen_test.py` |
-| 5. Assembly | `pipeline/assemble.py` | Prototype in `tools/render_coldopen_test.py` (cuts on narration pauses) |
-| 6. Upload | `pipeline/upload.py` | To build: needs a Google Cloud OAuth client from Brandon; always uploads as private |
-| Scheduler | `launchd` job | To build: runs the steps for the next video in `plan/schedule.json` |
+| 1. Script draft | `pipeline/write_script.py` + `pipeline/llm.py` | ✅ Built; live run completed (see `scripts/02-hyatt-regency-walkway-collapse-1981.md`) |
+| 2. Voice | `pipeline/voice.py` | ✅ Built — uses edge-tts (Microsoft Azure Neural voices). No API key needed. Samples at `output/en-*-Neural.mp3`. Full output: `output/<slug>/voice.wav` |
+| 3. Footage | `pipeline/footage.py` | ⚠️  Built but needs PEXELS_API_KEY (free at pexels.com/api) |
+| 4. Diagrams | `pipeline/diagrams/*.py` | ❌ To build — use `tools/render_coldopen_test.py` as starting template |
+| 5. Assembly | `pipeline/assemble.py` | ✅ Built — combines voice + clips + music via ffmpeg |
+| 6. Upload | `pipeline/upload.py` | ❌ To build: needs Google Cloud OAuth client from Brandon |
+| Scheduler | `launchd` job | ❌ To build |
 
 Helpers: claim a step by putting your chat's name in its Status cell and pushing before you start.
 
