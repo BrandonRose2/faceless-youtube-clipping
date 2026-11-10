@@ -2,6 +2,8 @@
 
 Planning files and scripts for a faceless YouTube channel in the engineering / "how things work" niche, using the **engineering disasters** lane.
 
+**Helping on this project?** Start with [HANDOFF.md](HANDOFF.md).
+
 ## Contents
 
 | Path | What it is |
