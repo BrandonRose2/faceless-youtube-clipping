@@ -23,7 +23,7 @@ A faceless YouTube channel about **engineering disasters**. One video goes live 
 
 Brandon's private Life Planner has a project page for this channel. It reads `plan/schedule.json` from this repo (`main` branch) and uses it for:
 
-- **Traffic light** on the project button: flashing **red** if a deadline has passed, **orange** if one is due within 2 days, **green** if on track.
+- **Traffic light** on the project button: flashing **red** if a deadline has passed, **orange** if one is due today or tomorrow, **green** if on track.
 - **Planner calendar**, plus his **Apple Calendar on Mac and iPhone**: each deadline shows at 9am on its day. Alerts fire at 6pm the evening before and at 9am on the day.
 
 Changes pushed to `main` show up in the planner within about 15 minutes.
