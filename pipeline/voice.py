@@ -1,20 +1,19 @@
-"""Step 2: generate narration voiceover via edge-tts (Microsoft Azure Neural voices).
+"""Step 2: generate narration voiceover via Kokoro (local, free TTS).
 
 Usage:
   python3 pipeline/voice.py --script scripts/02-hyatt-regency-walkway-collapse-1981.md \
-      --voice en-US-GuyNeural [--output-dir output]
+      --voice am_michael [--output-dir output]
 
-Writes: output/NN-slug/voice.wav (mono 44.1kHz, compatible with ffmpeg assembly)
-Also writes output/NN-slug/credits.txt if any visual assets are cited.
-
-edge-tts is free, requires no API key, and produces documentary-quality neural voices.
+Available voices: af_heart, af_bella, am_michael, bf_emma, bm_george, etc.
+Write out/wav (mono 24 kHz, compatible with ffmpeg assembly).
+Kokoro runs locally on your Mac after initial model download (~150 MB).
 See docs/PIPELINE.md for full pipeline overview.
 """
 import argparse
-import asyncio
 import re
 import sys
 from pathlib import Path
+import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -43,24 +42,25 @@ def extract_narration(script_path: Path) -> str:
     return "\n".join(clean).strip()
 
 
-async def synthesize(narration: str, voice: str, output_wav: Path) -> None:
-    """Generate MP3 via edge-tts then convert to WAV for ffmpeg compatibility."""
-    import edge_tts  # local import keeps this optional until needed
+def synthesize(narration: str, voice: str, output_wav: Path) -> None:
+    """Generate audio via Kokoro and save as mono WAV (24 kHz)."""
+    from kokoro import KPipeline
+    import soundfile as sf
+    import torch
 
-    communicate = edge_tts.Communicate(narration, voice)
-    mp3_tmp = output_wav.with_suffix(".mp3")
-    await communicate.save(str(mp3_tmp))
+    pipeline = KPipeline(lang_code='a')  # 'a' = American English
+    generator = pipeline(narration, voice=voice)
 
-    # Convert MP3 → WAV (ffmpeg required; matches pipeline assembly step)
-    import subprocess
+    all_audio = []
+    sample_rate = 24000
 
-    subprocess.run(
-        ["ffmpeg", "-y", "-i", str(mp3_tmp), "-ar", "44100", "-ac", "1", str(output_wav)],
-        check=True,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    mp3_tmp.unlink(missing_ok=True)
+    for result in generator:
+        audio_np = result.audio.cpu().numpy()
+        all_audio.append(audio_np)
+
+    if all_audio:
+        full_audio = np.concatenate(all_audio)
+        sf.write(str(output_wav), full_audio, sample_rate)
 
 
 def main():
@@ -92,7 +92,7 @@ def main():
     print(f"  Words: {len(narration.split())}")
     print(f"  Output: {out_wav.relative_to(root)}")
 
-    asyncio.run(synthesize(narration, args.voice, out_wav))
+    synthesize(narration, args.voice, out_wav)
 
     duration_info = ""
     try:

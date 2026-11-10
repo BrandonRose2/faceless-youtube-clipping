@@ -5,7 +5,7 @@ Goal: each Friday's video is produced with free tools, so Brandon only reviews a
 ## Where it runs
 On **Brandon's Mac**, on a schedule (`launchd`). It has to run there because FreeLLMAPI only listens on `localhost:31415`, and the free voice engine runs locally too.
 
-**Voice engine:** edge-tts (Microsoft Azure Neural voices). Installed via `pip3 install --break-system-packages edge-tts`. No API key needed. Choose a voice from the list at `docs/PIPELINE.md` or run `python3 -c "import asyncio, edge_tts; asyncio.run(edge_tts.list_voices())"`.
+**Voice engine:** Kokoro (local, free TTS). Installed in `.venv` — activate with `source .venv/bin/activate` then run pipeline scripts. Model downloaded automatically (~150 MB on first run). Voices: `af_heart`, `am_michael`, `bf_emma`, `bm_george`, etc. Edge-tts fallback also available if needed.
 
 ## Steps
 

@@ -18,9 +18,9 @@ Faceless YouTube channel about **engineering disasters**. One video goes live ev
 
 **Today is Nov 10.** In the schedule that is:
 - ✅ **#1 Big Dig: Script finished** — due today (it exists at `scripts/01-big-dig-ceiling-collapse.md`, ~2200 words)
-- ✅ **#2 Hyatt Regency: Script finished** — drafted via FreeLLMAPI (~2937 words, ~21:23 narration)
+- ✅ **#2 Hyatt Regency: Script finished** — drafted via FreeLLMAPI (~2937 words)
+- ✅ **#2 Hyatt Regency: Voiceover recorded** — generated with Kokoro (~22:09 narration) at `output/02-hyatt-regency-walkway-collapse-1981/voice.wav`
 - 🔴 **Video #1 Voiceover recorded** — due Thu Nov 12 (2 days away)
-- ✅ **Pipeline step 2 (voice)** — built and tested with edge-tts; full voiceover for #2 generated at `output/02-hyatt-regency-walkway-collapse-1981/voice.wav`
 
 Steps 1, 2, and 5 are built and functional. Steps 3 (footage — needs PEXELS_API_KEY), 4 (diagrams), and 6 (upload — needs Google OAuth) still need work, as does the launchd scheduler.
 
@@ -34,7 +34,7 @@ Steps 1, 2, and 5 are built and functional. Steps 3 (footage — needs PEXELS_AP
 | `plan/Engineering_Disasters_Channel_Plan.xlsx` | ✅ Master workbook (5 tabs: Top 20 Niches, Lane Comparison, Keywords, First 10 Videos tracker, Breakout References). Built with `tools/combine.py` |
 | `scripts/01-big-dig-ceiling-collapse.md` | ✅ Full ~15-min narration script with visual cues; also used as the style example for step 1 |
 | `pipeline/write_script.py` + `pipeline/llm.py` | ✅ Step 1 — drafts scripts through FreeLLMAPI (runs on Brandon's Mac, uses localhost:31415) |
-| `pipeline/voice.py` | ❌ To build — uses Kokoro (local, free) for documentary-style voices |
+| `pipeline/voice.py` | ✅ Built — uses **Kokoro** (local, free TTS). Install via `uv venv .venv && source .venv/bin/activate && uv pip install kokoro soundfile torch`. First run downloads ~150 MB model. Voices: `af_heart`, `am_michael`, `bf_emma`, `bm_george`, etc. Run as: `source .venv/bin/activate && python3 pipeline/voice.py --script scripts/XX-slug.md --voice am_michael` |
 | `pipeline/footage.py` | ❌ To build — reads `[visual cues]` from scripts, pulls Pexels clips, writes photographer credits |
 | `pipeline/diagrams/*` (templates) | ❌ To build — anchor/bolt, bridge, dam, pressure vessel diagrams; start from `tools/render_coldopen_test.py` |
 | `pipeline/assemble.py` | ❌ To build — prototype lives inside `tools/render_coldopen_test.py` (cuts on narration pauses with ffmpeg) |
