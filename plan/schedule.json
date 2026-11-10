@@ -1,0 +1,466 @@
+{
+  "project": "Faceless YouTube: Engineering Disasters",
+  "rules": "One video goes live every Friday, starting 2026-11-20. Each video has six deadlines counted back from its Friday: script -10 days, voiceover -8, visuals -5, edit -3, title/thumbnail/upload scheduled -2, live 0. Setup deadlines are one-off.",
+  "howToEdit": "Change a due date (YYYY-MM-DD) or add a milestone here and push. The Life Planner reads this file: traffic lights, the planner calendar and the Apple Calendar alerts update within about 10 minutes. Keep each id unique and unchanged once set. doneWhen is the video status that marks it done; null means it is ticked off by hand in the planner.",
+  "statuses": [
+    "Not started",
+    "Researching",
+    "Scripting",
+    "Voiceover",
+    "Visuals",
+    "Editing",
+    "Title & thumbnail",
+    "Scheduled",
+    "Published"
+  ],
+  "milestones": [
+    {
+      "id": "setup-channel",
+      "video": null,
+      "title": "Pick the channel name and create the YouTube channel",
+      "due": "2026-11-11",
+      "doneWhen": null
+    },
+    {
+      "id": "setup-method",
+      "video": null,
+      "title": "Decide how videos get made: hire an Upwork editor or pick an AI video tool",
+      "due": "2026-11-11",
+      "doneWhen": null
+    },
+    {
+      "id": "setup-voice",
+      "video": null,
+      "title": "Pick the narration voice (AI voice or your own)",
+      "due": "2026-11-12",
+      "doneWhen": null
+    },
+    {
+      "id": "setup-art",
+      "video": null,
+      "title": "Channel art: logo and banner",
+      "due": "2026-11-13",
+      "doneWhen": null
+    },
+    {
+      "id": "v1-script",
+      "video": 1,
+      "title": "#1 Big Dig: Script finished",
+      "due": "2026-11-10",
+      "doneWhen": "Voiceover"
+    },
+    {
+      "id": "v1-voice",
+      "video": 1,
+      "title": "#1 Big Dig: Voiceover recorded",
+      "due": "2026-11-12",
+      "doneWhen": "Visuals"
+    },
+    {
+      "id": "v1-visuals",
+      "video": 1,
+      "title": "#1 Big Dig: Visuals ready",
+      "due": "2026-11-15",
+      "doneWhen": "Editing"
+    },
+    {
+      "id": "v1-edit",
+      "video": 1,
+      "title": "#1 Big Dig: Edit finished",
+      "due": "2026-11-17",
+      "doneWhen": "Title & thumbnail"
+    },
+    {
+      "id": "v1-upload",
+      "video": 1,
+      "title": "#1 Big Dig: Title, thumbnail & upload scheduled",
+      "due": "2026-11-18",
+      "doneWhen": "Scheduled"
+    },
+    {
+      "id": "v1-live",
+      "video": 1,
+      "title": "#1 Big Dig: Goes live",
+      "due": "2026-11-20",
+      "doneWhen": "Published"
+    },
+    {
+      "id": "v2-script",
+      "video": 2,
+      "title": "#2 Hyatt Regency: Script finished",
+      "due": "2026-11-17",
+      "doneWhen": "Voiceover"
+    },
+    {
+      "id": "v2-voice",
+      "video": 2,
+      "title": "#2 Hyatt Regency: Voiceover recorded",
+      "due": "2026-11-19",
+      "doneWhen": "Visuals"
+    },
+    {
+      "id": "v2-visuals",
+      "video": 2,
+      "title": "#2 Hyatt Regency: Visuals ready",
+      "due": "2026-11-22",
+      "doneWhen": "Editing"
+    },
+    {
+      "id": "v2-edit",
+      "video": 2,
+      "title": "#2 Hyatt Regency: Edit finished",
+      "due": "2026-11-24",
+      "doneWhen": "Title & thumbnail"
+    },
+    {
+      "id": "v2-upload",
+      "video": 2,
+      "title": "#2 Hyatt Regency: Title, thumbnail & upload scheduled",
+      "due": "2026-11-25",
+      "doneWhen": "Scheduled"
+    },
+    {
+      "id": "v2-live",
+      "video": 2,
+      "title": "#2 Hyatt Regency: Goes live",
+      "due": "2026-11-27",
+      "doneWhen": "Published"
+    },
+    {
+      "id": "v3-script",
+      "video": 3,
+      "title": "#3 St. Francis Dam: Script finished",
+      "due": "2026-11-24",
+      "doneWhen": "Voiceover"
+    },
+    {
+      "id": "v3-voice",
+      "video": 3,
+      "title": "#3 St. Francis Dam: Voiceover recorded",
+      "due": "2026-11-26",
+      "doneWhen": "Visuals"
+    },
+    {
+      "id": "v3-visuals",
+      "video": 3,
+      "title": "#3 St. Francis Dam: Visuals ready",
+      "due": "2026-11-29",
+      "doneWhen": "Editing"
+    },
+    {
+      "id": "v3-edit",
+      "video": 3,
+      "title": "#3 St. Francis Dam: Edit finished",
+      "due": "2026-12-01",
+      "doneWhen": "Title & thumbnail"
+    },
+    {
+      "id": "v3-upload",
+      "video": 3,
+      "title": "#3 St. Francis Dam: Title, thumbnail & upload scheduled",
+      "due": "2026-12-02",
+      "doneWhen": "Scheduled"
+    },
+    {
+      "id": "v3-live",
+      "video": 3,
+      "title": "#3 St. Francis Dam: Goes live",
+      "due": "2026-12-04",
+      "doneWhen": "Published"
+    },
+    {
+      "id": "v4-script",
+      "video": 4,
+      "title": "#4 Oroville Dam: Script finished",
+      "due": "2026-12-01",
+      "doneWhen": "Voiceover"
+    },
+    {
+      "id": "v4-voice",
+      "video": 4,
+      "title": "#4 Oroville Dam: Voiceover recorded",
+      "due": "2026-12-03",
+      "doneWhen": "Visuals"
+    },
+    {
+      "id": "v4-visuals",
+      "video": 4,
+      "title": "#4 Oroville Dam: Visuals ready",
+      "due": "2026-12-06",
+      "doneWhen": "Editing"
+    },
+    {
+      "id": "v4-edit",
+      "video": 4,
+      "title": "#4 Oroville Dam: Edit finished",
+      "due": "2026-12-08",
+      "doneWhen": "Title & thumbnail"
+    },
+    {
+      "id": "v4-upload",
+      "video": 4,
+      "title": "#4 Oroville Dam: Title, thumbnail & upload scheduled",
+      "due": "2026-12-09",
+      "doneWhen": "Scheduled"
+    },
+    {
+      "id": "v4-live",
+      "video": 4,
+      "title": "#4 Oroville Dam: Goes live",
+      "due": "2026-12-11",
+      "doneWhen": "Published"
+    },
+    {
+      "id": "v5-script",
+      "video": 5,
+      "title": "#5 Flixborough: Script finished",
+      "due": "2026-12-08",
+      "doneWhen": "Voiceover"
+    },
+    {
+      "id": "v5-voice",
+      "video": 5,
+      "title": "#5 Flixborough: Voiceover recorded",
+      "due": "2026-12-10",
+      "doneWhen": "Visuals"
+    },
+    {
+      "id": "v5-visuals",
+      "video": 5,
+      "title": "#5 Flixborough: Visuals ready",
+      "due": "2026-12-13",
+      "doneWhen": "Editing"
+    },
+    {
+      "id": "v5-edit",
+      "video": 5,
+      "title": "#5 Flixborough: Edit finished",
+      "due": "2026-12-15",
+      "doneWhen": "Title & thumbnail"
+    },
+    {
+      "id": "v5-upload",
+      "video": 5,
+      "title": "#5 Flixborough: Title, thumbnail & upload scheduled",
+      "due": "2026-12-16",
+      "doneWhen": "Scheduled"
+    },
+    {
+      "id": "v5-live",
+      "video": 5,
+      "title": "#5 Flixborough: Goes live",
+      "due": "2026-12-18",
+      "doneWhen": "Published"
+    },
+    {
+      "id": "v6-script",
+      "video": 6,
+      "title": "#6 Quebec Bridge: Script finished",
+      "due": "2026-12-15",
+      "doneWhen": "Voiceover"
+    },
+    {
+      "id": "v6-voice",
+      "video": 6,
+      "title": "#6 Quebec Bridge: Voiceover recorded",
+      "due": "2026-12-17",
+      "doneWhen": "Visuals"
+    },
+    {
+      "id": "v6-visuals",
+      "video": 6,
+      "title": "#6 Quebec Bridge: Visuals ready",
+      "due": "2026-12-20",
+      "doneWhen": "Editing"
+    },
+    {
+      "id": "v6-edit",
+      "video": 6,
+      "title": "#6 Quebec Bridge: Edit finished",
+      "due": "2026-12-22",
+      "doneWhen": "Title & thumbnail"
+    },
+    {
+      "id": "v6-upload",
+      "video": 6,
+      "title": "#6 Quebec Bridge: Title, thumbnail & upload scheduled",
+      "due": "2026-12-23",
+      "doneWhen": "Scheduled"
+    },
+    {
+      "id": "v6-live",
+      "video": 6,
+      "title": "#6 Quebec Bridge: Goes live",
+      "due": "2026-12-25",
+      "doneWhen": "Published"
+    },
+    {
+      "id": "v7-script",
+      "video": 7,
+      "title": "#7 Willow Island: Script finished",
+      "due": "2026-12-22",
+      "doneWhen": "Voiceover"
+    },
+    {
+      "id": "v7-voice",
+      "video": 7,
+      "title": "#7 Willow Island: Voiceover recorded",
+      "due": "2026-12-24",
+      "doneWhen": "Visuals"
+    },
+    {
+      "id": "v7-visuals",
+      "video": 7,
+      "title": "#7 Willow Island: Visuals ready",
+      "due": "2026-12-27",
+      "doneWhen": "Editing"
+    },
+    {
+      "id": "v7-edit",
+      "video": 7,
+      "title": "#7 Willow Island: Edit finished",
+      "due": "2026-12-29",
+      "doneWhen": "Title & thumbnail"
+    },
+    {
+      "id": "v7-upload",
+      "video": 7,
+      "title": "#7 Willow Island: Title, thumbnail & upload scheduled",
+      "due": "2026-12-30",
+      "doneWhen": "Scheduled"
+    },
+    {
+      "id": "v7-live",
+      "video": 7,
+      "title": "#7 Willow Island: Goes live",
+      "due": "2027-01-01",
+      "doneWhen": "Published"
+    },
+    {
+      "id": "v8-script",
+      "video": 8,
+      "title": "#8 Kielland oil rig: Script finished",
+      "due": "2026-12-29",
+      "doneWhen": "Voiceover"
+    },
+    {
+      "id": "v8-voice",
+      "video": 8,
+      "title": "#8 Kielland oil rig: Voiceover recorded",
+      "due": "2026-12-31",
+      "doneWhen": "Visuals"
+    },
+    {
+      "id": "v8-visuals",
+      "video": 8,
+      "title": "#8 Kielland oil rig: Visuals ready",
+      "due": "2027-01-03",
+      "doneWhen": "Editing"
+    },
+    {
+      "id": "v8-edit",
+      "video": 8,
+      "title": "#8 Kielland oil rig: Edit finished",
+      "due": "2027-01-05",
+      "doneWhen": "Title & thumbnail"
+    },
+    {
+      "id": "v8-upload",
+      "video": 8,
+      "title": "#8 Kielland oil rig: Title, thumbnail & upload scheduled",
+      "due": "2027-01-06",
+      "doneWhen": "Scheduled"
+    },
+    {
+      "id": "v8-live",
+      "video": 8,
+      "title": "#8 Kielland oil rig: Goes live",
+      "due": "2027-01-08",
+      "doneWhen": "Published"
+    },
+    {
+      "id": "v9-script",
+      "video": 9,
+      "title": "#9 Tacoma Narrows: Script finished",
+      "due": "2027-01-05",
+      "doneWhen": "Voiceover"
+    },
+    {
+      "id": "v9-voice",
+      "video": 9,
+      "title": "#9 Tacoma Narrows: Voiceover recorded",
+      "due": "2027-01-07",
+      "doneWhen": "Visuals"
+    },
+    {
+      "id": "v9-visuals",
+      "video": 9,
+      "title": "#9 Tacoma Narrows: Visuals ready",
+      "due": "2027-01-10",
+      "doneWhen": "Editing"
+    },
+    {
+      "id": "v9-edit",
+      "video": 9,
+      "title": "#9 Tacoma Narrows: Edit finished",
+      "due": "2027-01-12",
+      "doneWhen": "Title & thumbnail"
+    },
+    {
+      "id": "v9-upload",
+      "video": 9,
+      "title": "#9 Tacoma Narrows: Title, thumbnail & upload scheduled",
+      "due": "2027-01-13",
+      "doneWhen": "Scheduled"
+    },
+    {
+      "id": "v9-live",
+      "video": 9,
+      "title": "#9 Tacoma Narrows: Goes live",
+      "due": "2027-01-15",
+      "doneWhen": "Published"
+    },
+    {
+      "id": "v10-script",
+      "video": 10,
+      "title": "#10 7 Cost-Cutting Shortcuts: Script finished",
+      "due": "2027-01-12",
+      "doneWhen": "Voiceover"
+    },
+    {
+      "id": "v10-voice",
+      "video": 10,
+      "title": "#10 7 Cost-Cutting Shortcuts: Voiceover recorded",
+      "due": "2027-01-14",
+      "doneWhen": "Visuals"
+    },
+    {
+      "id": "v10-visuals",
+      "video": 10,
+      "title": "#10 7 Cost-Cutting Shortcuts: Visuals ready",
+      "due": "2027-01-17",
+      "doneWhen": "Editing"
+    },
+    {
+      "id": "v10-edit",
+      "video": 10,
+      "title": "#10 7 Cost-Cutting Shortcuts: Edit finished",
+      "due": "2027-01-19",
+      "doneWhen": "Title & thumbnail"
+    },
+    {
+      "id": "v10-upload",
+      "video": 10,
+      "title": "#10 7 Cost-Cutting Shortcuts: Title, thumbnail & upload scheduled",
+      "due": "2027-01-20",
+      "doneWhen": "Scheduled"
+    },
+    {
+      "id": "v10-live",
+      "video": 10,
+      "title": "#10 7 Cost-Cutting Shortcuts: Goes live",
+      "due": "2027-01-22",
+      "doneWhen": "Published"
+    }
+  ]
+}
