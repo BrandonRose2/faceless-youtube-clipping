@@ -61,3 +61,4 @@ Per-video deadlines, counted back from its Friday: script −10 days, voiceover 
 6. **Small commits with clear messages**, e.g. "Move video 3 voiceover to Nov 24".
 7. **This repo is public.** Never commit passwords, API keys, or private links.
 8. **Brandon decides.** Propose schedule changes to him before pushing them.
+9. **Video and audio files never go in the repo.** They live in Brandon's iCloud Drive folder for this project, one subfolder per video (e.g. `01 Big Dig/` with `voiceover/`, `footage/`, `renders/`, `final/`), plus `Channel art/`. Ask Brandon to connect that folder to your chat if you need to read or save media.
