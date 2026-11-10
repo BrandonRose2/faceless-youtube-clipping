@@ -15,6 +15,9 @@ A faceless YouTube channel about **engineering disasters**. One video goes live 
 | `plan/Engineering_Disasters_Channel_Plan.xlsx` | Niches, lanes, keywords, first 10 videos, breakout videos to study. |
 | `scripts/` | One narration script per video, e.g. `01-big-dig-ceiling-collapse.md`. |
 | `tools/` | Helper scripts (workbook builder, cold-open test render). |
+| `pipeline/` | Automated video pipeline code (runs on Brandon's Mac through FreeLLMAPI). |
+| `docs/PIPELINE.md` | How the pipeline works, its build status, and how to run it. |
+| `.env.example` | Names of the keys the pipeline needs. Real keys go in `.env`, which is gitignored. |
 
 ## How the schedule drives Brandon's planner
 

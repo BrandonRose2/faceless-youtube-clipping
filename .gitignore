@@ -1,0 +1,12 @@
+# Secrets: this repo is public
+.env
+
+# Rendered media and caches
+output/
+*.mp4
+*.mov
+*.wav
+*.mp3
+__pycache__/
+*.pyc
+.DS_Store

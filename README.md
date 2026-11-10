@@ -11,6 +11,7 @@ Planning files and scripts for a faceless YouTube channel in the engineering / "
 | `plan/Engineering_Disasters_Channel_Plan.xlsx` | Master workbook with 5 tabs: Top 20 Niches, Lane Comparison, Keywords, First 10 Videos (tracker), Breakout References |
 | `scripts/01-big-dig-ceiling-collapse.md` | Full ~15-minute narration script for video #1, with visual cues |
 | `tools/combine.py` | Script that built the combined workbook |
+| `pipeline/` | Automated pipeline (step 1: script drafts through FreeLLMAPI). See `docs/PIPELINE.md` |
 | `plan/schedule.json` | Production schedule: every deadline. The Life Planner reads this file for its traffic lights, calendar and phone alerts |
 | `plan/SCHEDULE.md` | Readable copy of the schedule, week by week |
 
