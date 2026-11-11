@@ -48,7 +48,8 @@ def synthesize(narration: str, voice: str, output_wav: Path) -> None:
     import soundfile as sf
     import torch
 
-    pipeline = KPipeline(lang_code='a')  # 'a' = American English
+    # Kokoro voice names start with their accent: 'a' = American, 'b' = British.
+    pipeline = KPipeline(lang_code=voice[0] if voice[:1] in ("a", "b") else "a")
     generator = pipeline(narration, voice=voice)
 
     all_audio = []
@@ -66,7 +67,7 @@ def synthesize(narration: str, voice: str, output_wav: Path) -> None:
 def main():
     ap = argparse.ArgumentParser(description="Generate voiceover from a script draft.")
     ap.add_argument("--script", required=True, help="Path to script markdown")
-    ap.add_argument("--voice", default="en-US-GuyNeural", help="edge-tts voice name")
+    ap.add_argument("--voice", default="bm_george", help="Kokoro voice name, e.g. bm_george, am_michael")
     ap.add_argument("--output-dir", default=None, help="Output root (default: repo root / output)")
     args = ap.parse_args()
 

@@ -35,7 +35,7 @@ Brandon watches it and schedules or publishes it
 | Step | File | Status |
 |---|---|---|
 | 1. Script draft | `pipeline/write_script.py` + `pipeline/llm.py` | ✅ Built; live run completed (see `scripts/02-hyatt-regency-walkway-collapse-1981.md`) |
-| 2. Voice | `pipeline/voice.py` | ✅ Built — uses edge-tts (Microsoft Azure Neural voices). No API key needed. Samples at `output/en-*-Neural.mp3`. Full output: `output/<slug>/voice.wav` |
+| 2. Voice | `pipeline/voice.py` | ✅ Built — uses Kokoro (local, free). Default voice `bm_george`; accent follows the voice prefix (`a` American, `b` British). Full output: `output/<slug>/voice.wav`; copy to the iCloud video folder |
 | 3. Footage | `pipeline/footage.py` | ⚠️  Built but needs PEXELS_API_KEY (free at pexels.com/api) |
 | 4. Diagrams | `pipeline/diagrams/*.py` | ❌ To build — use `tools/render_coldopen_test.py` as starting template |
 | 5. Assembly | `pipeline/assemble.py` | ✅ Built — combines voice + clips + music via ffmpeg |
