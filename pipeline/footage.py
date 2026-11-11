@@ -164,6 +164,7 @@ def main():
     ap.add_argument("--script", required=True)
     ap.add_argument("--topic", default=None, help="Subject for photo searches, e.g. 'Big Dig tunnel'")
     ap.add_argument("--output-dir", default=None)
+    ap.add_argument("--extra", default="", help="Comma-separated extra Pixabay queries")
     args = ap.parse_args()
 
     load_env()
@@ -197,6 +198,7 @@ def main():
             if q:
                 stock_queries.append(q)
     photo_queries = list(dict.fromkeys(photo_queries))
+    stock_queries.extend([q.strip() for q in args.extra.split(",") if q.strip()])
     stock_queries = list(dict.fromkeys(stock_queries))
 
     credits_photos, credits_clips, seen = [], [], set()
@@ -220,13 +222,17 @@ def main():
     if pixabay_key:
         for q in stock_queries:
             print(f"  Pixabay: {q}")
-            for c in search_pixabay(q, pixabay_key):
+            for c in search_pixabay(q, pixabay_key, per_page=5):
                 if c["url"] in seen:
                     continue
                 seen.add(c["url"])
                 n += 1
                 mp4 = clips_dir / f"clip_{n:03d}_stock.mp4"
                 if download(c["url"], mp4):
+                    if c["duration"] < 4:
+                        print(f"    ⚠️  Skipping {mp4.name}: too short ({c['duration']}s)")
+                        mp4.unlink(missing_ok=True)
+                        continue
                     credits_clips.append(f"- {mp4.name}: {c['user']} via Pixabay {c['source']}")
                     print(f"    ✅ {mp4.name} ({c['duration']}s)")
             time.sleep(0.5)
