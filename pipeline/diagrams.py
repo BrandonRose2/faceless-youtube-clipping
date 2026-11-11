@@ -30,6 +30,9 @@ WHITE_TEXT = (240, 240, 240)
 DIM_TEXT = (160, 165, 175)
 
 
+TEXT_SCALE = 1.35  # all labels render ~35% larger so they read on a phone
+
+
 def load_font(size, bold=False):
     from PIL import ImageFont
     candidates = []
@@ -45,7 +48,7 @@ def load_font(size, bold=False):
         ])
     for fp in candidates:
         if os.path.exists(fp):
-            return ImageFont.truetype(fp, size)
+            return ImageFont.truetype(fp, int(size * TEXT_SCALE))
     return ImageFont.load_default()
 
 
@@ -54,10 +57,10 @@ def ease(t):
     return t * t * (3.0 - 2.0 * t)
 
 
-def draw_text_centered(draw, text, y, size, color, bold=False):
+def draw_text_centered(draw, text, y, size, color, bold=False, cx=None):
     font = load_font(size, bold=bold)
     bbox = draw.textbbox((0, 0), text, font=font)
-    x = (W - (bbox[2] - bbox[0])) // 2
+    x = (W if cx is None else 2 * cx) // 2 - (bbox[2] - bbox[0]) // 2
     draw.text((x, y), text, font=font, fill=color)
 
 
@@ -118,128 +121,112 @@ def draw_map_animation(d, t, dur):
 
 
 def draw_cutaway_animation(d, t, dur):
-    d.rectangle([(100, 200), (1820, 350)], fill=CONCRETE)
-    d.rectangle([(100, 350), (1820, 650)], fill=(40, 45, 55))
-    for x in range(150, 1800, 280):
-        d.rectangle([(x, 650), (x + 200, 800)], fill=(130, 135, 145))
-    d.rectangle([(100, 800), (1820, 1000)], fill=(30, 32, 38))
-    d.rectangle([(900, 780), (1020, 830)], fill=(60, 65, 75))
-    callouts = [
-        ((950, 275), (600, 100), "CONCRETE ROOF"),
-        ((950, 500), (1300, 100), "PLENUM (AIR VENTILATION)"),
-        ((950, 725), (1300, 200), "PRECAST CONCRETE CEILING PANELS"),
+    d.rectangle([(100, 170), (1820, 320)], fill=CONCRETE)          # roof
+    d.rectangle([(100, 320), (1820, 620)], fill=(40, 45, 55))      # space above ceiling
+    for x in range(150, 1800, 280):                                # hanging ceiling panels
+        d.rectangle([(x, 620), (x + 200, 760)], fill=(130, 135, 145))
+        d.line([(x + 100, 320), (x + 100, 620)], fill=STEEL, width=4)  # hanger rods
+    d.rectangle([(100, 760), (1820, 1000)], fill=(30, 32, 38))     # roadway space
+    labels = [
+        (215, "CONCRETE TUNNEL ROOF", WHITE_TEXT),
+        (450, "SPACE ABOVE THE CEILING (AIR DUCT)", WHITE_TEXT),
+        (800, "HANGING CEILING PANELS", EPOXY_ORANGE),
+        (930, "TRAFFIC LANES", DIM_TEXT),
     ]
-    progress = ease(min(1.0, t / 4.0))
-    shown = int(len(callouts) * progress)
-    for i in range(shown):
-        pt, label_pos, text = callouts[i]
-        d.line([pt, label_pos], fill=EPOXY_ORANGE, width=3)
-        d.ellipse([pt[0] - 8, pt[1] - 8, pt[0] + 8, pt[1] + 8], fill=EPOXY_ORANGE)
-        draw_text_centered(d, text, label_pos[1], 28, WHITE_TEXT)
+    shown = int(len(labels) * ease(min(1.0, t / 4.0)) + 0.999)
+    for y, text, col in labels[:shown]:
+        draw_text_centered(d, text, y, 30, col, bold=True)
     if t > 2.0:
         a = min(1.0, (t - 2.0) / 1.0)
-        draw_text_centered(d, "TUNNEL CROSS-SECTION: D STREET PORTAL", 50, 36,
+        draw_text_centered(d, "TUNNEL CROSS-SECTION: D STREET PORTAL", 70, 36,
                            tuple(int(c * a) for c in WHITE_TEXT), bold=True)
 
 
 def draw_hanger_zoom(d, t, dur):
-    d.rectangle([(200, 100), (1820, 400)], fill=CONCRETE)
-    hole_x, hole_y = 850, 220
-    d.rectangle([(hole_x - 20, hole_y - 80), (hole_x + 20, hole_y + 20)], fill=(50, 52, 58))
-    epoxy_fill = ease(min(1.0, max(0.0, (t - 1.0) / 3.0)))
-    d.rectangle([(hole_x - 18, hole_y - 78 * epoxy_fill), (hole_x + 18, hole_y + 18)], fill=EPOXY_ORANGE)
-    bolt_visible = ease(min(1.0, max(0.0, (t - 2.0) / 2.0)))
-    if bolt_visible > 0:
-        d.rectangle([(hole_x - 6, hole_y - 75 * bolt_visible), (hole_x + 6, hole_y)], fill=STEEL)
-    rod_start_y = hole_y + 20
-    d.rectangle([(hole_x - 4, rod_start_y), (hole_x + 4, 900)], fill=STEEL)
-    bracket_y = 750
-    d.polygon([(hole_x - 80, bracket_y), (hole_x + 80, bracket_y),
-               (hole_x + 60, bracket_y + 40), (hole_x - 60, bracket_y + 40)], fill=STEEL)
-    d.rectangle([(200, 790), (1820, 850)], fill=(130, 135, 145))
+    d.rectangle([(150, 80), (1820, 380)], fill=CONCRETE)             # concrete roof
+    hole_x, top, bottom = 760, 150, 380
+    d.rectangle([(hole_x - 22, top), (hole_x + 22, bottom)], fill=(50, 52, 58))
+    fill = ease(min(1.0, max(0.0, (t - 1.0) / 3.0)))
+    d.rectangle([(hole_x - 20, bottom - (bottom - top) * fill), (hole_x + 20, bottom)], fill=EPOXY_ORANGE)
+    bolt = ease(min(1.0, max(0.0, (t - 2.0) / 2.0)))
+    if bolt > 0:
+        d.rectangle([(hole_x - 7, bottom - (bottom - top - 10) * bolt), (hole_x + 7, bottom + 10)], fill=STEEL)
+    d.rectangle([(hole_x - 5, bottom + 10), (hole_x + 5, 800)], fill=STEEL)     # hanger rod
+    d.polygon([(hole_x - 90, 800), (hole_x + 90, 800), (hole_x + 70, 840), (hole_x - 70, 840)], fill=STEEL)
+    d.rectangle([(150, 840), (1820, 910)], fill=(130, 135, 145))                 # ceiling panel
+    draw_text_centered(d, "CONCRETE TUNNEL ROOF", 100, 28, WHITE_TEXT, bold=True, cx=1350)
     labels = [
-        ((hole_x + 50, hole_y - 40), "8-INCH STAINLESS STEEL BOLT", 2.5),
-        ((hole_x + 50, hole_y + 30), "TWO-PART EPOXY ADHESIVE", 3.5),
-        ((hole_x + 50, rod_start_y + 100), "STEEL BRACKET & HANGER ROD", 4.5),
-        ((hole_x + 50, rod_start_y + 200), "CONCRETE TUNNEL ROOF", 5.5),
+        ((hole_x + 10, 200), "8-INCH STAINLESS-STEEL BOLT", 2.5),
+        ((hole_x + 22, 320), "EPOXY HOLDS THE BOLT IN THE HOLE", 3.5),
+        ((hole_x + 5, 600), "STEEL HANGER ROD", 4.5),
+        ((hole_x + 90, 820), "CEILING PANEL", 5.5),
     ]
-    for label_pt, text, show_at in labels:
+    font = load_font(28)
+    for (px, py), text, show_at in labels:
         if t >= show_at:
-            d.line([label_pt, (label_pt[0] - 40, label_pt[1])], fill=EPOXY_ORANGE, width=2)
-            draw_text_centered(d, text, label_pt[1] - 15, 28, WHITE_TEXT)
+            d.line([(px, py), (1000, py)], fill=EPOXY_ORANGE, width=3)
+            d.ellipse([px - 7, py - 7, px + 7, py + 7], fill=EPOXY_ORANGE)
+            d.text((1015, py - 22), text, font=font, fill=WHITE_TEXT)
 
 
 def draw_weight_scale(d, t, dur):
-    d.rectangle([(900, 750), (1120, 850)], fill=(80, 85, 95))
-    d.polygon([(1010, 850), (1050, 850), (1030, 750)], fill=STEEL)
-    beam_angle = -30 * ease(min(1.0, t / 3.0))
-    rad = math.radians(beam_angle)
-    cos_a, sin_a = math.cos(rad), math.sin(rad)
-    left_x, left_y = 1030 - 400 * cos_a, 800 + 400 * sin_a
-    right_x, right_y = 1030 + 400 * cos_a, 800 - 400 * sin_a
-    d.line([(left_x, left_y), (right_x, right_y)], fill=STEEL, width=12)
-    d.arc([(left_x - 60, left_y), (left_x + 60, left_y + 80)], 0, 180, fill=DIM_TEXT, width=4)
-    d.line([(left_x - 50, left_y), (left_x - 50, left_y + 80)], fill=DIM_TEXT, width=2)
-    d.line([(left_x + 50, left_y), (left_x + 50, left_y + 80)], fill=DIM_TEXT, width=2)
-    d.arc([(right_x - 60, right_y), (right_x + 60, right_y + 80)], 0, 180, fill=RED_ALERT, width=4)
-    d.line([(right_x - 50, right_y), (right_x - 50, right_y + 80)], fill=RED_ALERT, width=2)
-    d.line([(right_x + 50, right_y), (right_x + 50, right_y + 80)], fill=RED_ALERT, width=2)
-    weight_size = 60 * ease(min(1.0, t / 2.0))
-    d.rectangle([(right_x - weight_size, right_y + 80), (right_x + weight_size, right_y + 160)], fill=RED_ALERT)
+    px, py, half = 960, 520, 440  # pivot and beam half-length
+    d.polygon([(px - 70, 900), (px + 70, 900), (px, py)], fill=CONCRETE)
+    tilt = math.radians(18 * ease(min(1.0, t / 3.0)))
+    lx, ly = px - half * math.cos(tilt), py - half * math.sin(tilt)
+    rx, ry = px + half * math.cos(tilt), py + half * math.sin(tilt)
+    d.line([(lx, ly), (rx, ry)], fill=STEEL, width=14)
+    for x, y, col in ((lx, ly, DIM_TEXT), (rx, ry, RED_ALERT)):
+        d.line([(x - 70, y + 90), (x, y)], fill=col, width=3)
+        d.line([(x + 70, y + 90), (x, y)], fill=col, width=3)
+        d.arc([(x - 90, y + 50), (x + 90, y + 130)], 0, 180, fill=col, width=6)
+    grow = ease(min(1.0, t / 2.0))
+    w = 80 * grow
+    d.rectangle([(rx - w, ry + 130 - 110 * grow), (rx + w, ry + 130)], fill=RED_ALERT)
     if t > 1.5:
-        draw_text_centered(d, "STANDARD ANCHOR LOAD", left_y + 100, 24, DIM_TEXT)
+        draw_text_centered(d, "NORMAL LOAD", ly - 90, 30, DIM_TEXT, cx=lx)
     if t > 2.5:
-        draw_text_centered(d, "26-TON OVERHEAD CEILING PANEL", right_y + 180, 24, RED_ALERT, bold=True)
+        draw_text_centered(d, "26 TONS OF CEILING PANELS", ry + 160, 30, RED_ALERT, bold=True, cx=min(rx, W - 330))
 
 
 def draw_creep_label(d, t, dur):
-    d.rectangle([(100, 100), (1920, 980)], fill=(25, 28, 35))
-    label_y_base = 400
-    slide_amount = ease(min(1.0, max(0.0, (t - 2.0) / 5.0))) * 200
-    label_rect = [(700, label_y_base + slide_amount), (1220, label_y_base + 200 + slide_amount)]
-    d.rectangle(label_rect, fill=(240, 200, 80), outline=EPOXY_ORANGE, width=3)
-    draw_text_centered(d, "EPOXY ADHESIVE", 440 + slide_amount, 32, BG_COLOR)
-    weight_y = label_rect[1][1] + 10
-    d.rectangle([(850, weight_y), (1070, weight_y + 100)], fill=RED_ALERT)
-    d.line([(850, weight_y), (850, weight_y - 50)], fill=DIM_TEXT, width=3)
-    d.line([(1070, weight_y), (1070, weight_y - 50)], fill=DIM_TEXT, width=3)
-    d.line([(960, weight_y - 50), (960, label_rect[0][1])], fill=DIM_TEXT, width=3)
-    clock_cx, clock_cy = 1500, 200
-    d.ellipse([clock_cx - 80, clock_cy - 80, clock_cx + 80, clock_cy + 80],
-              fill=(40, 45, 55), outline=WHITE_TEXT, width=4)
-    minute_hand_angle = t * math.pi * 2
-    mx = clock_cx + int(60 * math.sin(minute_hand_angle))
-    my = clock_cy - int(60 * math.cos(minute_hand_angle))
-    d.line([(clock_cx, clock_cy), (mx, my)], fill=WHITE_TEXT, width=4)
-    years_passed = int(slide_amount / 200 * 7)
-    if years_passed > 0:
-        draw_text_centered(d, f"{years_passed} YEARS OF CREEP", 100, 32, DIM_TEXT)
-    if slide_amount > 150:
-        draw_text_centered(d, "EPOXY CREEP: Slow deformation under constant load", 850, 36, RED_ALERT, bold=True)
+    d.rectangle([(100, 100), (1820, 1000)], fill=(25, 28, 35))
+    slide = ease(min(1.0, max(0.0, (t - 2.0) / 5.0))) * 200
+    top = 300 + slide
+    d.rectangle([(700, top), (1220, top + 180)], fill=(240, 200, 80), outline=EPOXY_ORANGE, width=3)
+    draw_text_centered(d, "EPOXY", top + 60, 36, BG_COLOR, bold=True)
+    wy = top + 240
+    d.line([(960, top + 180), (960, wy)], fill=DIM_TEXT, width=4)
+    d.rectangle([(860, wy), (1060, wy + 90)], fill=RED_ALERT)
+    draw_text_centered(d, "CONSTANT LOAD", wy + 25, 24, WHITE_TEXT, bold=True)
+    cx, cy = 1550, 230
+    d.ellipse([cx - 80, cy - 80, cx + 80, cy + 80], fill=(40, 45, 55), outline=WHITE_TEXT, width=4)
+    ang = t * math.pi * 2
+    d.line([(cx, cy), (cx + int(60 * math.sin(ang)), cy - int(60 * math.cos(ang)))], fill=WHITE_TEXT, width=4)
+    years = int(slide / 200 * 7)
+    if years > 0:
+        draw_text_centered(d, f"{years} YEAR{'S' if years > 1 else ''}", cy + 110, 30, DIM_TEXT, bold=True, cx=cx)
+    if slide > 150:
+        draw_text_centered(d, "CREEP: SLOW STRETCHING UNDER CONSTANT LOAD", 915, 34, RED_ALERT, bold=True)
 
 
 def draw_epoxy_comparison(d, t, dur):
-    split_x = W // 2
-    d.rectangle([(50, 150), (split_x - 50, 950)], fill=(20, 30, 50), outline=BLUE_MAP, width=4)
-    tube_y = 400
-    d.rectangle([(200, tube_y), (400, tube_y + 250)], fill=(100, 150, 200), outline=BLUE_MAP, width=3)
-    d.rectangle([(200, tube_y), (400, tube_y + 40)], fill=BLUE_MAP)
-    draw_text_centered(d, "STANDARD SET", 250, 36, BLUE_MAP, bold=True)
-    benefits = ["Slower Cure Time", "High Creep Resistance", "Approved for Overhead"]
-    for i, b in enumerate(benefits):
-        if t > 1.0 + i * 0.8:
-            draw_text_centered(d, f"✓ {b}", 550 + i * 60, 28, GREEN_OK)
-
-    d.rectangle([(split_x + 50, 150), (W - 50, 950)], fill=(50, 20, 20), outline=RED_ALERT, width=4)
-    d.rectangle([(1520, tube_y), (1720, tube_y + 250)], fill=(200, 100, 100), outline=RED_ALERT, width=3)
-    d.rectangle([(1520, tube_y), (1720, tube_y + 40)], fill=RED_ALERT)
-    draw_text_centered(d, "FAST SET", 250, 36, RED_ALERT, bold=True)
-    warnings = ["Fast Curing Speed", "POOR CREEP RESISTANCE", "NOT for Heavy Overhead"]
-    for i, w in enumerate(warnings):
-        if t > 1.0 + i * 0.8:
-            col = RED_ALERT if "NOT" in w else DIM_TEXT
-            draw_text_centered(d, f"⚠ {w}", 550 + i * 60, 28, col)
-    draw_text_centered(d, "VS", split_x - 20, 480, WHITE_TEXT, bold=True)
+    mid = W // 2
+    sides = [
+        (480, (20, 30, 50), BLUE_MAP, (100, 150, 200), "STANDARD SET",
+         ["Hardens more slowly", "Better creep resistance"], GREEN_OK),
+        (1440, (50, 20, 20), RED_ALERT, (200, 100, 100), "FAST SET",
+         ["Hardens quickly", "Very poor creep resistance"], RED_ALERT),
+    ]
+    for cx, bg, edge, tube, title, points, col in sides:
+        d.rectangle([(cx - 430, 120), (cx + 430, 960)], fill=bg, outline=edge, width=4)
+        draw_text_centered(d, title, 190, 40, edge, bold=True, cx=cx)
+        d.rectangle([(cx - 70, 320), (cx + 70, 600)], fill=tube, outline=edge, width=3)
+        d.rectangle([(cx - 70, 320), (cx + 70, 360)], fill=edge)
+        for i, p in enumerate(points):
+            if t > 1.0 + i * 0.8:
+                draw_text_centered(d, p, 690 + i * 75, 30, col if i else WHITE_TEXT, bold=bool(i), cx=cx)
+    draw_text_centered(d, "VS", 470, 56, WHITE_TEXT, bold=True, cx=mid)
 
 
 def draw_timeline_warning(d, t, dur):
@@ -261,7 +248,8 @@ def draw_timeline_warning(d, t, dur):
         if t > 3.0:
             draw_text_centered(d, "1999: ANCHOR BOLTS DETECTED SLIPPING", flag_y - 40, 28, RED_ALERT, bold=True)
     if t > 4.5:
-        draw_text_centered(d, "7 YEARS - NO CREEP MONITORING / NO INSPECTIONS", timeline_y - 80, 32, DIM_TEXT)
+        gap_cx = (marker_positions.get(1999, 500) + marker_positions.get(2006, 1500)) // 2 - 40
+        draw_text_centered(d, "7 YEARS — NO CREEP MONITORING", timeline_y - 75, 30, DIM_TEXT, cx=gap_cx)
     collapse_x = marker_positions.get(2006, 1500)
     if t > 6.0:
         d.ellipse([collapse_x - 30, timeline_y - 40, collapse_x + 30, timeline_y + 20], fill=RED_ALERT)

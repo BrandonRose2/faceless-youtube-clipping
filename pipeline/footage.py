@@ -134,15 +134,25 @@ def cue_to_photo_query(cue: str) -> str | None:
 
 # ---------- Pixabay ----------
 
+def load_blocklist() -> set[str]:
+    """Pixabay video IDs we never want (off-topic clips), one per line in plan/footage_blocklist.txt."""
+    f = ROOT / "plan" / "footage_blocklist.txt"
+    if not f.exists():
+        return set()
+    return {line.split("#")[0].strip() for line in f.read_text().splitlines() if line.split("#")[0].strip()}
+
+
 def search_pixabay(query: str, key: str, per_page: int = 3) -> list[dict]:
-    params = {"key": key, "q": query, "per_page": max(3, per_page), "safesearch": "true"}
+    # video_type=film keeps out animations (neon tunnels, cartoons, 3D renders).
+    params = {"key": key, "q": query, "per_page": max(3, per_page), "safesearch": "true", "video_type": "film"}
     try:
         data = get_json("https://pixabay.com/api/videos/?" + urlencode(params))
     except Exception as e:
         print(f"  ⚠️  Pixabay search failed for '{query}': {e}")
         return []
     out = []
-    for hit in data.get("hits", [])[:per_page]:
+    blocked = load_blocklist()
+    for hit in [h for h in data.get("hits", []) if str(h.get("id")) not in blocked][:per_page]:
         vids = hit.get("videos", {})
         chosen = next((vids[s] for s in ("large", "medium", "small") if vids.get(s, {}).get("url")), None)
         if chosen:

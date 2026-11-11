@@ -199,7 +199,7 @@ def assemble_video(
         "ffmpeg", "-y",
         "-i", str(main_concat),
         "-i", str(final_audio),
-        "-c:v", "copy", "-c:a", "copy",
+        "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart",
         str(output)
     ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
