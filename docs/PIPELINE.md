@@ -37,8 +37,8 @@ Brandon watches it and schedules or publishes it
 | 1. Script draft | `pipeline/write_script.py` + `pipeline/llm.py` | ✅ Built; live run completed (see `scripts/02-hyatt-regency-walkway-collapse-1981.md`) |
 | 2. Voice | `pipeline/voice.py` | ✅ Built — uses Kokoro (local, free). Default voice `bm_george`; accent follows the voice prefix (`a` American, `b` British). Full output: `output/<slug>/voice.wav`; copy to the iCloud video folder |
 | 3. Footage | `pipeline/footage.py` | ✅ Built — updated for --extra queries, 5 results/query, 4s min duration. (Codex) |
-| 4. Diagrams | `pipeline/diagrams.py` | 🟡 In progress (Codex) — renders 1920x1080 animated diagram clips + manifest.json |
-| 5. Assembly | `pipeline/assemble.py` | ✅ Built — combines voice + clips + music via ffmpeg |
+| 4. Diagrams | `pipeline/diagrams.py` | ✅ Built (Codex) — renders 1920x1080 animated diagram clips + manifest.json. Needs visual polish (sizes, label overlap) |
+| 5. Assembly | `pipeline/assemble.py` | ✅ Built — 1920x1080, places diagrams/photos/clips in script-cue order, no black gaps; voice + optional music. Audio is PCM (convert to AAC before upload) |
 | 6. Upload | `pipeline/upload.py` | ❌ To build: needs Google Cloud OAuth client from Brandon |
 | Scheduler | `launchd` job | ❌ To build |
 
