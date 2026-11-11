@@ -22,7 +22,7 @@ Faceless YouTube channel about **engineering disasters**. One video goes live ev
 - ✅ **#2 Hyatt Regency: Voiceover recorded** — generated with Kokoro (~22:09 narration) at `output/02-hyatt-regency-walkway-collapse-1981/voice.wav`
 - 🔴 **Video #1 Voiceover recorded** — due Thu Nov 12 (2 days away)
 
-Steps 1, 2, and 5 are built and functional. Steps 3 (footage — needs PEXELS_API_KEY), 4 (diagrams), and 6 (upload — needs Google OAuth) still need work, as does the launchd scheduler.
+Steps 1, 2, and 5 are built and functional. Step 3 (footage) now uses Wikimedia + Pixabay. Steps 4 (diagrams), and 6 (upload — needs Google OAuth) still need work, as does the launchd scheduler.
 
 ---
 
@@ -35,7 +35,7 @@ Steps 1, 2, and 5 are built and functional. Steps 3 (footage — needs PEXELS_AP
 | `scripts/01-big-dig-ceiling-collapse.md` | ✅ Full ~15-min narration script with visual cues; also used as the style example for step 1 |
 | `pipeline/write_script.py` + `pipeline/llm.py` | ✅ Step 1 — drafts scripts through FreeLLMAPI (runs on Brandon's Mac, uses localhost:31415) |
 | `pipeline/voice.py` | ✅ Built — uses **Kokoro** (local, free TTS). Install via `uv venv .venv && source .venv/bin/activate && uv pip install kokoro soundfile torch`. First run downloads ~150 MB model. Voices: `af_heart`, `am_michael`, `bf_emma`, `bm_george`, etc. Run as: `source .venv/bin/activate && python3 pipeline/voice.py --script scripts/XX-slug.md --voice am_michael` |
-| `pipeline/footage.py` | ❌ To build — reads `[visual cues]` from scripts, pulls Pexels clips, writes photographer credits |
+| `pipeline/footage.py` | ✅ Built — Wikimedia Commons photos + Pixabay clips, writes `credits.txt` (see `docs/PIPELINE.md`) |
 | `pipeline/diagrams/*` (templates) | ❌ To build — anchor/bolt, bridge, dam, pressure vessel diagrams; start from `tools/render_coldopen_test.py` |
 | `pipeline/assemble.py` | ❌ To build — prototype lives inside `tools/render_coldopen_test.py` (cuts on narration pauses with ffmpeg) |
 | `pipeline/upload.py` | ❌ To build — needs Google Cloud OAuth client from Brandon; always uploads private |
@@ -69,7 +69,7 @@ If the next helper wants to unblock the schedule, these are the practical priori
 
 1. **Step 2 (voice)** — Kokoro on the Mac. Two documentary voices for Brandon to choose from. Without this, no video after script can ship.
 2. **Step 5 (assemble)** — The cold-open test (`tools/render_coldopen_test.py`) already proves the concept: PIL diagram animation + ffmpeg concat + overlay text cards. Generalize it into `pipeline/assemble.py`.
-3. **Step 3 (footage)** — Reads `[visual cues]`, hits Pexels API, saves clips + `credits.txt`.
+3. **Step 3 (footage)** — Reads `[visual cues]`, pulls Wikimedia photos and Pixabay clips, saves clips + `credits.txt`. (Done 2026-11-11.)
 4. **Step 4 (diagrams)** — Template-driven SVG/PIL drawings for common disaster types.
 5. **Step 6 (upload)** — Needs a Google Cloud OAuth client from Brandon. Always private upload.
 6. **launchd scheduler** — Runs the full chain for whichever video is next in `schedule.json`.

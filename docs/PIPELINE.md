@@ -17,7 +17,7 @@ next video in plan/schedule.json
    │                                  └─ fact check by a Claude chat or Brandon
    ▼
 2. voice.py ── edge-tts (Microsoft Azure Neural, free, no API key) ──► output/slug/voice.wav
-3. footage.py ── Pexels API (free) ──► output/slug/clips/ + credits.txt
+3. footage.py ── Wikimedia photos + Pixabay clips (free) ──► output/slug/clips/ + credits.txt
 4. diagrams ── code templates (free) ──► output/slug/diagrams/
    │
    ▼
@@ -36,7 +36,7 @@ Brandon watches it and schedules or publishes it
 |---|---|---|
 | 1. Script draft | `pipeline/write_script.py` + `pipeline/llm.py` | ✅ Built; live run completed (see `scripts/02-hyatt-regency-walkway-collapse-1981.md`) |
 | 2. Voice | `pipeline/voice.py` | ✅ Built — uses Kokoro (local, free). Default voice `bm_george`; accent follows the voice prefix (`a` American, `b` British). Full output: `output/<slug>/voice.wav`; copy to the iCloud video folder |
-| 3. Footage | `pipeline/footage.py` | ⚠️  Built but needs PEXELS_API_KEY (free at pexels.com/api) |
+| 3. Footage | `pipeline/footage.py` | ✅ Built — real event photos from Wikimedia Commons (no key; turned into slow-zoom clips) + stock clips from Pixabay (needs `PIXABAY_API_KEY` in `.env`). Pexels is not issuing new keys. Run: `python3 pipeline/footage.py --script scripts/XX-slug.md --topic "Big Dig Boston tunnel"`. Paste the PHOTOS credits from `credits.txt` into the video description |
 | 4. Diagrams | `pipeline/diagrams/*.py` | ❌ To build — use `tools/render_coldopen_test.py` as starting template |
 | 5. Assembly | `pipeline/assemble.py` | ✅ Built — combines voice + clips + music via ffmpeg |
 | 6. Upload | `pipeline/upload.py` | ❌ To build: needs Google Cloud OAuth client from Brandon |
