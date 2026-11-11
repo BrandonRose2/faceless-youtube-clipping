@@ -1,68 +1,68 @@
-# Next task: diagrams, more footage, and a real assembly (video #1 Big Dig)
+# Next task: rebuild video #1 (Big Dig) section by section, cold-open quality
 
-**Written:** 2026-11-11. **Deadline:** Big Dig visuals ready by Sun Nov 15; edit done by Tue Nov 17; video goes live Fri Nov 20.
+**Written:** 2026-11-11. **Goal:** the full 17.5-minute video at the quality of the cold open. **Video goes live Fri Nov 20; final cut needed by Tue Nov 17.**
 
-Read `HANDOFF.md` (rules) and `docs/PIPELINE.md` (steps) first. Then do the three parts below **in order**, one commit and push per part. Test every part on `scripts/01-big-dig-ceiling-collapse.md`.
+The automatic draft (`pipeline/assemble.py`) was rejected: random footage, irrelevant photos, no music, no sound effects. The cold open (`tools/render_coldopen_test.py`, result in iCloud `01 Big Dig/renders/coldopen_test.mp4`) is the quality bar. It works because every shot is chosen by hand for what the narrator is saying at that moment, cuts land on narration pauses, and there is a sound bed (low drone) plus sound effects (the crack).
 
-## Where things stand
+We rebuild the video that way: **one script section at a time, each hand-directed.**
 
-- Voiceover is done: `output/01-big-dig-ceiling-collapse/voice.wav` (17:31, Kokoro `bm_george`).
-- Footage step works (`pipeline/footage.py`): 11 Wikimedia photos (as slow-zoom clips) + 9 Pixabay clips in `output/01-big-dig-ceiling-collapse/clips/`. That is only ~3 minutes of visuals for 17.5 minutes of narration.
-- `pipeline/assemble.py` has three problems: it **ignores `--diagrams-dir`**, it uses clips in **file order, not script order**, and it fills leftover time with **black**. It also renders at 1280x720.
-- Keys live in `.env` (`PIXABAY_API_KEY`, `FREELLMAPI_*`). `.env` is gitignored. Never print, log or commit a key.
+## How to work (read this, the models doing this are on a free tier)
 
-## Part 1: diagrams (`pipeline/diagrams.py`)
+- **One step per Codex session.** Do the step, check it, commit and push, then stop and report. Don't start the next step.
+- **Small edits.** Never rewrite a whole existing file in one reply. New files: write them in parts if they are long.
+- Read `HANDOFF.md` rules first. Use `.venv/bin/python` (has Kokoro, numpy, Pillow). Media never goes in the repo; `output/` is gitignored.
+- Mark the step you're on in the table at the bottom (`🟡 <your name>`) and push before starting; mark `✅` when done.
 
-Build one script that renders each diagram cue as a short animated 1920x1080 `.mp4` (30 fps, 6 to 15 s each) into `output/<slug>/diagrams/`, named in script order: `diag_01.mp4`, `diag_02.mp4`, ...
+## Footage rules (the main thing that went wrong)
 
-- Start from `tools/render_coldopen_test.py`: it already has `diagram()`, `card()`, `ease()` and font helpers using PIL frames + ffmpeg. Reuse that style (dark background, clean lines, one accent color, big readable labels).
-- Pure Python + PIL + ffmpeg. No paid tools, no AI image generation.
-- Also write `output/<slug>/diagrams/manifest.json`: a list of `{"file": "diag_01.mp4", "cue": "<exact cue text>"}` in script order.
-- Each diagram must be simple and accurate. When unsure of an engineering detail, keep it generic rather than invent specifics.
+1. **Every shot must show what the narrator is talking about right then.** If nothing fits, use a diagram, a title/text card, or a slow push-in on a relevant real photo. Never a random clip.
+2. Priority: real photos of the Big Dig / Boston (Wikimedia) > our diagrams > text cards > stock video. Stock video only for generic shots that truly match (night traffic in a tunnel, a courtroom gavel, a news camera), at most ~20% of a section.
+3. Never use: animations/neon/cartoons, beaches, nature, non-Boston cities shown as Boston, anything in `plan/footage_blocklist.txt`.
+4. Shots 3–7 s each, cut on narration pauses. No shot repeats within a section.
+5. Look at a frame of every clip/photo before using it (`ffmpeg -ss 1 -i clip.mp4 -frames:v 1 check.jpg`). Approved assets are in `output/01-big-dig-ceiling-collapse/clips/` (rejected ones moved to `clips_rejected/`) and `diagrams/`.
 
-The Big Dig script's diagram cues (all 12 must be covered):
+## Sound rules
 
-1. Animated map: the old elevated road fades out; tunnels draw in underneath the city.
-2. 3D cutaway of the tunnel near the D Street portal. Label the roof, the hanging ceiling and the space above it. (A clean 2D cross-section is fine.)
-3. Zoom into a single hanger: rod, steel bracket, anchor bolt going up into the concrete roof.
-4. Graphic: a weight scale. One panel tips heavily.
-5. Simple animation: a weight hanging from a sticky label on a wall. Time-lapse clock spins. The label slowly slides.
-6. Split screen: two epoxy tubes labeled STANDARD SET and FAST SET.
-7. Graphic: a red flag pops up on a timeline at 1999. Seven empty years stretch out to 2006.
-8. Animated reconstruction, no graphic detail. Anchors pop out one by one along a line, like a zipper.
-9. Title card: "Federal investigation: 12 months." (No NTSB logo.)
-10. Simple animated ledger. Amounts tick up as each is named. (Take the amounts from the script text.)
-11. Clean diagram: a sustained load arrow pointing down on a bolt, labeled "Load that never goes away."
-12. Diagram: overhead load carried by redundant hangers. If one fails, the others share the weight.
+- Every section has a **music bed** under the voice, ducked so the voice stays clear (bed around -24 dB, voice around -16 dB; final mix normalized to -14 LUFS).
+- Music: if Brandon has put tracks in iCloud `Faceless Youtube - Claude w: VidIQ/Music/` (YouTube Audio Library, safe for monetization), use those. Otherwise use the procedural beds from `pipeline/sound.py`.
+- **Sound effects** on key moments: whooshes on transitions, a low hit on big facts and numbers, a crack/rumble for the collapse, clock ticks for "creep over time", a typewriter tick for text cards, a riser before reveals. Keep them subtle.
 
-Also handle the script's title card cue ("THE GLUE THAT KILLED — The Big Dig Ceiling Collapse") with `card()`.
+## Steps
 
-**Done when:** `python3 pipeline/diagrams.py --script scripts/01-big-dig-ceiling-collapse.md` produces all files plus `manifest.json`, and a frame grab from each looks clean (text readable, nothing cut off).
+### Step 1. Per-section voiceover with timings (`pipeline/sections.py`)
+Split `scripts/01-big-dig-ceiling-collapse.md` into its 10 timed sections (the `## 0:00 Cold open` … `## 13:45 Closing` headings; skip "Title, thumbnail…" and "Production notes"). For each section, generate voice with Kokoro `bm_george` **one paragraph at a time** (reuse the narration-cleaning in `pipeline/voice.py`), join with 0.35 s gaps, and write to `output/<slug>/sections/NN-name/`:
+- `vo.wav`
+- `timing.json`: `{"paragraphs": [{"start": 0.0, "end": 7.4, "text": "..."}], "cues": [{"at": 7.4, "cue": "<visual cue text>"}]}`. A cue's `at` = start of the paragraph that follows it.
+Done when all 10 folders exist and the sum of section lengths is ~17–18 min.
 
-## Part 2: more footage (`pipeline/footage.py`)
+### Step 2. Sound library (`pipeline/sound.py`)
+numpy-only generators, each returning a mono 44.1 kHz float array, plus a `write_wav()` helper: `drone(seconds, mood)` (moods: tense, somber, neutral; reuse `audio_bed()` from the cold-open script as the starting point), `hit()`, `crack()`, `whoosh()`, `riser(seconds)`, `tick()`, `typewriter_tick()`. Write a 20 s demo `output/sound_demo.wav` with each effect, spaced out. Done when the demo plays cleanly with no clipping.
 
-Goal: at least 8 minutes of distinct photos + clips for Big Dig, so assembly rarely repeats.
+### Step 3. Scene toolkit (`pipeline/scene_kit.py`)
+Reusable helpers modeled on `tools/render_coldopen_test.py`: `shot(src, start, dur, speed=1.0, grade=None)` (trim, scale/crop to 1920x1080, optional slow-mo and color grade), `kenburns(photo, dur, direction)`, `text_card(lines, dur)`, `lower_third(text)`, `concat(shots)`, and `mix(vo, bed, sfx_list, out)` (sfx_list = `[(time, wav)]`; ducks the bed under the voice; normalizes to -14 LUFS with ffmpeg `loudnorm`). Done when a 15 s test scene renders with a photo push-in, a text card, a stock shot, a bed and two effects.
 
-- Add a `--extra` option: comma-separated extra Pixabay queries, e.g. `--extra "boston traffic,tunnel lights,city at night,courtroom,news camera,hard hat worker,glue tube,clock"`.
-- Raise Pixabay results to up to 5 per query and skip clips shorter than 4 s.
-- Keep the credits format in `credits.txt` exactly as it is (PHOTOS section needs credit; STOCK section optional).
-- Keep the Wikimedia search as is. Every photo must show this disaster or Boston's highways; never add unrelated images.
+### Steps 4–13. One section per step (`pipeline/scenes/sNN_<name>.py`)
+For each section in order: read its `timing.json`, then **write a shot list as a comment at the top of the file first** (time range → visual → why it matches the narration → sound effect). Then render it with `scene_kit` to `output/<slug>/sections/NN-name/section.mp4`. Grab a frame every 10 s into `sections/NN-name/check/` and look at every frame against the footage rules before committing. One section per step:
+4 = 0:00 Cold open (port `tools/render_coldopen_test.py`; keep its look), 5 = 1:00 The Big Dig, 6 = 2:30 How the ceiling was held up, 7 = 4:00 Creep, 8 = 6:00 The warning in 1999, 9 = 7:45 July 10, 2006 (keep it respectful: no graphic depiction, no victim imagery), 10 = 9:00 The investigation, 11 = 10:45 Who paid, 12 = 12:00 What engineers learned, 13 = 13:45 Closing.
 
-**Done when:** a rerun gives 8+ minutes total (sum durations with ffprobe and print the total).
+### Step 14. Final build (`pipeline/build_video.py`)
+Join all `section.mp4` files with a short crossfade, check total length matches the voiceover, render `output/<slug>/final.mp4` (1080p, H.264, AAC 192k, -14 LUFS, `+faststart`). Copy it to iCloud `01 Big Dig/renders/final_v1.mp4` if your sandbox allows; otherwise tell Brandon it's ready to copy.
 
-## Part 3: assembly in script order (`pipeline/assemble.py`)
+## Status
 
-- Render at **1920x1080**.
-- Walk the script's cues in order. For each cue, pick the matching visual: a diagram from `manifest.json` for diagram cues, a Wikimedia photo clip for archival/photo cues, a Pixabay clip for scene cues. Spread them over the narration in the same order the cues appear (the cue's position in the script text, as a fraction of total words, gives a good estimate of when it is spoken).
-- Never show black. If a gap needs filling, reuse a relevant clip (not the one just shown).
-- Keep the existing pause-point cutting, music option, and output path behavior.
-
-**Done when:** `python3 pipeline/assemble.py --script scripts/01-big-dig-ceiling-collapse.md --voice output/01-big-dig-ceiling-collapse/voice.wav --clips-dir output/01-big-dig-ceiling-collapse/clips --diagrams-dir output/01-big-dig-ceiling-collapse/diagrams --output output/01-big-dig-ceiling-collapse/draft.mp4` makes a 17:31 1080p video with no black stretches, and diagrams appear near the lines that describe them.
-
-## Rules (short version)
-
-- `git pull` before editing. Put your chat name in the Status cell of the step in `docs/PIPELINE.md` and push before starting.
-- Media files (`.mp4`, `.wav`, `.jpg`) never go in the repo; `output/` is gitignored. When a part is done, copy results to Brandon's iCloud folder: `~/Library/Mobile Documents/com~apple~CloudDocs/Faceless Youtube - Claude w: VidIQ/01 Big Dig/` (`footage/` for clips and diagrams, `renders/` for `draft.mp4`).
-- Small commits with clear messages. Update `docs/PIPELINE.md` status when a part is done.
-- Don't delete Brandon's files. Ask before anything you can't undo.
-- When finished, tell Brandon: what was built, the draft video path, and anything that looked wrong.
+| Step | Status |
+|---|---|
+| 1. Per-section voiceover + timings | ⬜ |
+| 2. Sound library | ⬜ |
+| 3. Scene toolkit | ⬜ |
+| 4. Cold open | ⬜ |
+| 5. The Big Dig | ⬜ |
+| 6. How the ceiling was held up | ⬜ |
+| 7. Creep | ⬜ |
+| 8. The warning in 1999 | ⬜ |
+| 9. July 10, 2006 | ⬜ |
+| 10. The investigation | ⬜ |
+| 11. Who paid | ⬜ |
+| 12. What engineers learned | ⬜ |
+| 13. Closing | ⬜ |
+| 14. Final build | ⬜ |
