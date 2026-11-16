@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 def strip_visual_cues(text: str) -> str:
     """Remove *[italics]* visual cues so TTS only reads narration."""
-    return re.sub(r"\*\\[.*?\\]\*", "", text, flags=re.DOTALL)
+    return re.sub(r"\*\[.*?\]\*", "", text, flags=re.DOTALL)
 
 
 def extract_narration(script_path: Path) -> str:
