@@ -43,19 +43,39 @@ def drone(seconds, mood="neutral", seed=1):
     """Low music bed. mood: 'neutral' (the cold-open bed), 'somber' (minor, slow),
     'tense' (dissonant, faster pulse). Fades in and out over 3 s (or a third of
     the length for very short beds)."""
+    # Notes are spread from 55 Hz up to ~330 Hz so laptop speakers can play them
+    # (a bed made only of 50 Hz notes is nearly silent on small speakers).
+    # Each mood: [(frequency Hz, amplitude)], slow swell Hz, tremolo Hz, tremolo depth, heartbeat
     moods = {
-        # root Hz, [(ratio, amplitude), ...], LFO Hz
-        "neutral": (55.0, [(1.0, 1.0), (1.498, 0.6), (2.005, 0.3)], 0.07),
-        "somber": (49.0, [(1.0, 1.0), (1.189, 0.55), (1.498, 0.4), (2.0, 0.2)], 0.05),
-        "tense": (55.0, [(1.0, 1.0), (1.059, 0.5), (1.498, 0.45), (2.12, 0.25)], 0.16),
+        # steady open fifth: calm, neutral
+        "neutral": ([(55, 1.0), (110, 0.8), (165, 0.55), (220, 0.4), (330, 0.22)], 0.07, 0.0, 0.0, False),
+        # A minor chord, slow swell: sad / serious
+        "somber": ([(55, 0.9), (110, 1.0), (130.8, 0.8), (164.8, 0.7), (220, 0.45), (261.6, 0.3)], 0.045, 0.0, 0.0, False),
+        # clashing notes a semitone apart (they beat against each other), trembling, with a heartbeat
+        "tense": ([(55, 0.9), (58.3, 0.8), (110, 0.8), (116.5, 0.7), (164.8, 0.5), (174.6, 0.45), (233, 0.3)], 0.12, 5.5, 0.35, True),
     }
-    root, parts, lfo_hz = moods.get(mood, moods["neutral"])
+    notes, swell_hz, trem_hz, trem_depth, heartbeat = moods.get(mood, moods["neutral"])
     t = _t(seconds)
-    lfo = 0.6 + 0.4 * np.sin(2 * math.pi * lfo_hz * t)
-    x = sum(a * np.sin(2 * math.pi * root * r * t) for r, a in parts) * lfo * 0.05
-    # a little slow-moving air so it does not sound like a test tone
     rng = np.random.default_rng(seed)
-    x = x + _soften(rng.standard_normal(len(t)) * 0.02, 400)
+    x = np.zeros(len(t))
+    for i, (f0, a) in enumerate(notes):
+        # each note drifts in and out a little out of step with the others
+        ph = rng.uniform(0, 2 * math.pi)
+        swell = 0.75 + 0.25 * np.sin(2 * math.pi * swell_hz * (1 + 0.13 * i) * t + ph)
+        x += a * swell * np.sin(2 * math.pi * f0 * t + ph)
+    if trem_hz:
+        x *= 1 - trem_depth * (0.5 + 0.5 * np.sin(2 * math.pi * trem_hz * t))
+    if heartbeat:  # soft low double-pulse every 1.1 s
+        for k in range(int(seconds / 1.1) + 1):
+            for off, lvl in ((0.0, 1.0), (0.22, 0.6)):
+                i = int(SR * (k * 1.1 + off))
+                n = min(int(SR * 0.25), len(x) - i)
+                if n > 0:
+                    tt = np.arange(n) / SR
+                    x[i:i + n] += lvl * 1.6 * np.sin(2 * math.pi * 62 * tt) * np.exp(-tt * 14)
+    # a little slow-moving air so it does not sound like a test tone
+    x = x + _soften(rng.standard_normal(len(t)), 700) * 0.8
+    x = x / (np.sqrt(np.mean(x ** 2)) + 1e-9) * 0.07   # level: ~0.07 RMS, peaks near 0.2
     f = 3.0 if seconds > 9 else seconds / 3
     return _fade(x, f, f)
 
@@ -115,12 +135,26 @@ def tick(seconds=0.18):
     return np.clip(x, -1, 1) * 0.5
 
 
-def typewriter_tick(seconds=0.07):
-    """Short key click for text cards."""
+def typewriter_tick(seconds=0.12, seed=6):
+    """One typewriter key strike: a sharp click, a low thud of the type bar, and a
+    short metallic ring. Pass a different seed for each key so a run of them
+    does not sound identical."""
     t = _t(seconds)
-    x = np.sin(2 * math.pi * 3100 * t) * np.exp(-t * 110) + \
-        np.random.default_rng(6).standard_normal(len(t)) * np.exp(-t * 220) * 0.5
-    return np.clip(x, -1, 1) * 0.4
+    rng = np.random.default_rng(seed)
+    pitch = 1.0 + rng.uniform(-0.12, 0.12)            # each key rings a little differently
+    click = _soften(rng.standard_normal(len(t)), 5500) * np.exp(-t * 700) * 2.2   # bright snap
+    thud = np.sin(2 * math.pi * 170 * pitch * t) * np.exp(-t * 90) * 0.9           # type bar hits paper
+    ring = (np.sin(2 * math.pi * 2350 * pitch * t) + 0.6 * np.sin(2 * math.pi * 3870 * pitch * t)) \
+        * np.exp(-t * 75) * 0.25                                                    # metal ring
+    x = click + thud + ring
+    return np.clip(x / (np.max(np.abs(x)) + 1e-9), -1, 1) * 0.6
+
+
+def typewriter_ding(seconds=0.9):
+    """End-of-line bell."""
+    t = _t(seconds)
+    x = (np.sin(2 * math.pi * 2400 * t) + 0.5 * np.sin(2 * math.pi * 3600 * t)) * np.exp(-t * 6)
+    return x / (np.max(np.abs(x)) + 1e-9) * 0.35
 
 
 def write_wav(path, x):
@@ -155,7 +189,7 @@ def demo(path="output/sound_demo.wav"):
     for i in range(3):
         _place(mix, tick(), 12.6 + i * 0.5)          # 12.6  three ticks
     for i in range(4):
-        _place(mix, typewriter_tick(), 15.0 + i * 0.18)  # 15.0 four key clicks
+        _place(mix, typewriter_tick(seed=10 + i), 15.0 + i * 0.18)  # 15.0 four key clicks
     _place(mix, whoosh(), 17.0)         # 17.0 closing whoosh
     peak = float(np.max(np.abs(mix)))
     if peak > 0.95:  # never clip the demo
