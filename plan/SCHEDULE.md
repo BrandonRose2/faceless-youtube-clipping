@@ -9,20 +9,18 @@ The app reads `plan/schedule.json`; this file is the readable copy. Edit dates i
 | Due | Deadline |
 |---|---|
 | Tue, Nov 10 | #1 Big Dig: Script finished |
-| Wed, Nov 11 | Pick the channel name and create the YouTube channel |
-| Wed, Nov 11 | Decide how videos get made: hire an Upwork editor or pick an AI video tool |
-| Thu, Nov 12 | Pick the narration voice (AI voice or your own) |
 | Thu, Nov 12 | #1 Big Dig: Voiceover recorded |
-| Fri, Nov 13 | Channel art: logo and banner |
-| Sun, Nov 15 | #1 Big Dig: Visuals ready |
 
 ## Week of Mon, Nov 16
 
 | Due | Deadline |
 |---|---|
-| Tue, Nov 17 | #1 Big Dig: Edit finished |
+| Mon, Nov 16 | #1 Big Dig: Sound library and scene toolkit built (steps 2-3) |
+| Tue, Nov 17 | #1 Big Dig: Sections 1-5 rendered (cold open to the 1999 warning) |
 | Tue, Nov 17 | #2 Hyatt Regency: Script finished |
-| Wed, Nov 18 | #1 Big Dig: Title, thumbnail & upload scheduled |
+| Wed, Nov 18 | #1 Big Dig: Visuals ready (all 10 sections rendered) |
+| Thu, Nov 19 | #1 Big Dig: Edit finished (final build and watch-through) |
+| Thu, Nov 19 | #1 Big Dig: Title, thumbnail & upload scheduled |
 | Thu, Nov 19 | #2 Hyatt Regency: Voiceover recorded |
 | Fri, Nov 20 | #1 Big Dig: Goes live |
 | Sun, Nov 22 | #2 Hyatt Regency: Visuals ready |

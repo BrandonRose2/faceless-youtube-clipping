@@ -15,34 +15,6 @@
   ],
   "milestones": [
     {
-      "id": "setup-channel",
-      "video": null,
-      "title": "Pick the channel name and create the YouTube channel",
-      "due": "2026-11-11",
-      "doneWhen": null
-    },
-    {
-      "id": "setup-method",
-      "video": null,
-      "title": "Decide how videos get made: hire an Upwork editor or pick an AI video tool",
-      "due": "2026-11-11",
-      "doneWhen": null
-    },
-    {
-      "id": "setup-voice",
-      "video": null,
-      "title": "Pick the narration voice (AI voice or your own)",
-      "due": "2026-11-12",
-      "doneWhen": null
-    },
-    {
-      "id": "setup-art",
-      "video": null,
-      "title": "Channel art: logo and banner",
-      "due": "2026-11-13",
-      "doneWhen": null
-    },
-    {
       "id": "v1-script",
       "video": 1,
       "title": "#1 Big Dig: Script finished",
@@ -57,24 +29,38 @@
       "doneWhen": "Visuals"
     },
     {
+      "id": "v1-sound",
+      "video": 1,
+      "title": "#1 Big Dig: Sound library and scene toolkit built (steps 2-3)",
+      "due": "2026-11-16",
+      "doneWhen": null
+    },
+    {
+      "id": "v1-cut-a",
+      "video": 1,
+      "title": "#1 Big Dig: Sections 1-5 rendered (cold open to the 1999 warning)",
+      "due": "2026-11-17",
+      "doneWhen": null
+    },
+    {
       "id": "v1-visuals",
       "video": 1,
-      "title": "#1 Big Dig: Visuals ready",
-      "due": "2026-11-15",
+      "title": "#1 Big Dig: Visuals ready (all 10 sections rendered)",
+      "due": "2026-11-18",
       "doneWhen": "Editing"
     },
     {
       "id": "v1-edit",
       "video": 1,
-      "title": "#1 Big Dig: Edit finished",
-      "due": "2026-11-17",
+      "title": "#1 Big Dig: Edit finished (final build and watch-through)",
+      "due": "2026-11-19",
       "doneWhen": "Title & thumbnail"
     },
     {
       "id": "v1-upload",
       "video": 1,
       "title": "#1 Big Dig: Title, thumbnail & upload scheduled",
-      "due": "2026-11-18",
+      "due": "2026-11-19",
       "doneWhen": "Scheduled"
     },
     {
