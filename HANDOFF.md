@@ -19,6 +19,29 @@ A faceless YouTube channel about **engineering disasters**. One video goes live 
 | `docs/PIPELINE.md` | How the pipeline works, its build status, and how to run it. |
 | `.env.example` | Names of the keys the pipeline needs. Real keys go in `.env`, which is gitignored. |
 
+## Current state (verified 2026-11-14)
+
+**Today is Nov 14.** Video #1 goes live Fri Nov 20 — 6 days. The automatic draft was rejected; the video must be rebuilt section by section. See `docs/NEXT-TASK.md` for the full rebuild plan (steps 1–14).
+
+### What is actually done
+
+- ✅ **#1 Big Dig script** — `scripts/01-big-dig-ceiling-collapse.md` (~15 min narration, 10 timed sections)
+- ✅ **#1 Big Dig voiceover** — full `voice.wav` (48 MB) + **all 10 sections** split with timings (`output/01-big-dig-ceiling-collapse/sections/*/timing.json` + `vo.wav`). Voice is Kokoro `bm_george`. **Step 1 of NEXT-TASK is complete.**
+- ✅ **#1 Big Dig footage** — 40 clips + 16 diagrams + `credits.txt` in `output/01-big-dig-ceiling-collapse/`. Approved assets in `clips/`, rejected in `clips_rejected/`.
+- ✅ **#1 Big Dig drafts** — `draft.mp4` (299 MB) and `draft_v2.mp4` (187 MB). **These are not the final cut** — the automatic assembly was rejected for random footage, no music, no sound effects. The cold-open test (`tools/render_coldopen_test.py`, result in iCloud `01 Big Dig/renders/coldopen_test.mp4`) is the quality bar.
+- ✅ **#2 Hyatt Regency script** — `scripts/02-hyatt-regency-walkway-collapse-1981.md` (~19 KB)
+- ✅ **#2 Hyatt Regency voiceover** — `output/02-hyatt-regency-walkway-collapse-1981/voice.wav` (61 MB)
+- ✅ **Pipeline steps 1, 2, 3, 5 built** — `write_script.py`, `voice.py` (Kokoro), `footage.py` (Wikimedia + Pixabay), `assemble.py`
+- ✅ **Step 4 (diagrams) built** — `pipeline/diagrams.py` renders 1920×1080 animated diagram clips + `manifest.json`; needs visual polish (sizes, label overlap)
+- ❌ **Step 6 (upload)** — not built; needs Google Cloud OAuth client from Brandon
+- ❌ **Scheduler (launchd)** — not built
+- ❌ **NEXT-TASK steps 4–13 (per-section rebuild)** — not started, all ⬜ in `docs/NEXT-TASK.md`
+- ❌ **Channel art** — not created; channel name/method/voice choice never formally recorded (the work was built anyway — Kokoro `bm_george`, Wikimedia+Pixabay footage)
+
+### The gap
+
+`plan/schedule.json` still describes the **old pipeline timeline** (script → voice → visuals → edit → upload). It does not contain the actual remaining work: the per-section rebuild (NEXT-TASK steps 4–14). It also shows four setup milestones (channel name, method, voice, art) as overdue even though the equivalent work was done. **The schedule needs to be rewritten to match how the work is actually being done** — Brandon decides those dates; propose changes before pushing.
+
 ## How the schedule drives Brandon's planner
 
 Brandon's private Life Planner has a project page for this channel. It reads `plan/schedule.json` from this repo (`main` branch) and uses it for:
