@@ -76,7 +76,7 @@ def shot(src, start, dur, out, speed=1.0, grade=None, fade_in=0.0, fade_out=0.0)
     vf = _chain(f"setpts={1 / speed:.4f}*PTS",
                 f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS}",
                 GRADES[grade], _fades(dur, fade_in, fade_out))
-    run(["ffmpeg", "-y", "-ss", str(start), "-i", src, "-t", f"{dur * speed:.3f}", "-vf", vf] + _ENC + [out])
+    run(["ffmpeg", "-y", "-ss", str(start), "-i", src, "-vf", vf, "-t", f"{dur:.3f}"] + _ENC + [out])
     return out
 
 
@@ -203,11 +203,13 @@ def mix(vo, bed, sfx_list, out, vo_db=-16.0, bed_db=-24.0, duck_db=-6.0, sfx_db=
         b = np.resize(bed, n)  # repeat if the bed is shorter
         b = b * (_db(bed_db) / (np.sqrt(np.mean(b ** 2)) + 1e-9)) * (1 - (1 - _db(duck_db)) * active)
         mixed += b
-    for at, s in sfx_list:
+    for item in sfx_list:  # (seconds, array) or (seconds, array, peak_db) to make one effect louder or quieter
+        at, s = item[0], item[1]
+        db = item[2] if len(item) > 2 else sfx_db
         i = int(at * SR)
         if 0 <= i < n:
             j = min(n, i + len(s))
-            mixed[i:j] += s[: j - i] * _db(sfx_db) / max(np.max(np.abs(s)), 1e-9)
+            mixed[i:j] += s[: j - i] * _db(db) / max(np.max(np.abs(s)), 1e-9)
     tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False).name
     _write_wav(tmp, mixed)
     run(["ffmpeg", "-y", "-i", tmp, "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-ar", str(SR), "-ac", "1",
