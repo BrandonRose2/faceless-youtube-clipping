@@ -93,7 +93,11 @@ def kenburns(photo, dur, out, direction="in", amount=0.18, grade=None, fade_in=0
     vf = _chain("scale=3840:2160:force_original_aspect_ratio=increase,crop=3840:2160",
                 f"zoompan={moves[direction]}:d={n}:s={W}x{H}:fps={FPS}",
                 GRADES[grade], _fades(dur, fade_in, fade_out))
-    run(["ffmpeg", "-y", "-loop", "1", "-i", photo, "-frames:v", str(n), "-vf", vf] + _ENC + [out])
+    # Normalize through PIL first: some "photos" are really GIF/TIFF/PNG files with a .jpg name.
+    png = tempfile.NamedTemporaryFile(suffix=".png", delete=False).name
+    Image.open(photo).convert("RGB").save(png)
+    run(["ffmpeg", "-y", "-loop", "1", "-i", png, "-frames:v", str(n), "-vf", vf] + _ENC + [out])
+    os.unlink(png)
     return out
 
 
