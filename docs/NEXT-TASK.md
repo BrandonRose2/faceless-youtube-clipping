@@ -1,6 +1,6 @@
 # Next task: rebuild video #1 (Big Dig) section by section, cold-open quality
 
-**Written:** 2026-11-11. **Goal:** the full 17.5-minute video at the quality of the cold open. **Video goes live Fri Nov 20; final cut needed by Tue Nov 17.**
+**Written:** 2026-11-11. **Last updated:** 2026-11-21. **Goal:** the full 17.5-minute video at the quality of the cold open. **Sections 1–8 rendered; sections 9–10 and final build remaining.**
 
 The automatic draft (`pipeline/assemble.py`) was rejected: random footage, irrelevant photos, no music, no sound effects. The cold open (`tools/render_coldopen_test.py`, result in iCloud `01 Big Dig/renders/coldopen_test.mp4`) is the quality bar. It works because every shot is chosen by hand for what the narrator is saying at that moment, cuts land on narration pauses, and there is a sound bed (low drone) plus sound effects (the crack).
 
@@ -52,17 +52,17 @@ Join all `section.mp4` files with a short crossfade, check total length matches 
 
 | Step | Status |
 |---|---|
-| 1. Per-section voiceover + timings | ⬜ |
-| 2. Sound library | ⬜ |
-| 3. Scene toolkit | ⬜ |
-| 4. Cold open | ⬜ |
-| 5. The Big Dig | ⬜ |
-| 6. How the ceiling was held up | ⬜ |
-| 7. Creep | ⬜ |
-| 8. The warning in 1999 | ⬜ |
-| 9. July 10, 2006 | ⬜ |
-| 10. The investigation | ⬜ |
-| 11. Who paid | ⬜ |
+| 1. Per-section voiceover + timings | ✅ |
+| 2. Sound library | ✅ |
+| 3. Scene toolkit | ✅ |
+| 4. Cold open | ✅ |
+| 5. The Big Dig | ✅ |
+| 6. How the ceiling was held up | ✅ |
+| 7. Creep | ✅ |
+| 8. The warning in 1999 | ✅ |
+| 9. July 10, 2006 | ✅ |
+| 10. The investigation | ✅ |
+| 11. Who paid | ✅ |
 | 12. What engineers learned | ⬜ |
 | 13. Closing | ⬜ |
 | 14. Final build | ⬜ |

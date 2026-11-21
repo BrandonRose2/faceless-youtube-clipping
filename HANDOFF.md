@@ -19,24 +19,33 @@ A faceless YouTube channel about **engineering disasters**. One video goes live 
 | `docs/PIPELINE.md` | How the pipeline works, its build status, and how to run it. |
 | `.env.example` | Names of the keys the pipeline needs. Real keys go in `.env`, which is gitignored. |
 
-## Current state (verified 2026-11-14)
+## Current state (verified 2026-11-21)
 
-**Today is Nov 14.** Video #1 goes live Fri Nov 20 — 6 days. The automatic draft was rejected; the video must be rebuilt section by section. See `docs/NEXT-TASK.md` for the full rebuild plan (steps 1–14).
+**Today is Nov 21, 2026.** Video #1 was targeted to go live Fri Nov 20. The automatic draft was rejected; the video is being rebuilt section by section to match cold-open quality. See `docs/NEXT-TASK.md` for the full rebuild plan (steps 1–14).
 
 ### What is actually done
 
 - ✅ **#1 Big Dig script** — `scripts/01-big-dig-ceiling-collapse.md` (~15 min narration, 10 timed sections)
 - ✅ **#1 Big Dig voiceover** — full `voice.wav` (48 MB) + **all 10 sections** split with timings (`output/01-big-dig-ceiling-collapse/sections/*/timing.json` + `vo.wav`). Voice is Kokoro `bm_george`. **Step 1 of NEXT-TASK is complete.**
 - ✅ **#1 Big Dig footage** — 40 clips + 16 diagrams + `credits.txt` in `output/01-big-dig-ceiling-collapse/`. Approved assets in `clips/`, rejected in `clips_rejected/`.
-- ✅ **#1 Big Dig drafts** — `draft.mp4` (299 MB) and `draft_v2.mp4` (187 MB). **These are not the final cut** — the automatic assembly was rejected for random footage, no music, no sound effects. The cold-open test (`tools/render_coldopen_test.py`, result in iCloud `01 Big Dig/renders/coldopen_test.mp4`) is the quality bar.
+- ✅ **#1 Big Dig sound & toolkit** — `pipeline/sound.py` sound library (procedural beds, hits, cracks, risers, ticks) and `pipeline/scene_kit.py` scene renderer built and verified. **Steps 2 & 3 of NEXT-TASK are complete.**
+- 🟡 **#1 Big Dig per-section renders (Steps 4–13)** — **Sections 1–8 rendered**:
+  - Step 4: Section 1 Cold Open (`pipeline/scenes/s01_cold_open.py`)
+  - Step 5: Section 2 The Big Dig (`pipeline/scenes/s02_the_big_dig.py`)
+  - Step 6: Section 3 How the ceiling was held up (`pipeline/scenes/s03_how_held_up.py`)
+  - Step 7: Section 4 Creep (`pipeline/scenes/s04_creep.py`)
+  - Step 8: Section 5 The warning in 1999 (`pipeline/scenes/s05_warning_1999.py`)
+  - Step 9: Section 6 July 10, 2006 (`pipeline/scenes/s06_july_10_2006.py`)
+  - Step 10: Section 7 The investigation (`pipeline/scenes/s07_investigation.py`)
+  - Step 11: Section 8 Who paid (`pipeline/scenes/s08_who_paid.py`)
+  - Remaining: Section 9 What engineers learned (Step 12), Section 10 Closing (Step 13).
+- ❌ **#1 Big Dig final build (Step 14)** — `pipeline/build_video.py` built, awaiting rendering of remaining sections 9 and 10 to combine all 10 into final output.
 - ✅ **#2 Hyatt Regency script** — `scripts/02-hyatt-regency-walkway-collapse-1981.md` (~19 KB)
 - ✅ **#2 Hyatt Regency voiceover** — `output/02-hyatt-regency-walkway-collapse-1981/voice.wav` (61 MB)
-- ✅ **Pipeline steps 1, 2, 3, 5 built** — `write_script.py`, `voice.py` (Kokoro), `footage.py` (Wikimedia + Pixabay), `assemble.py`
-- ✅ **Step 4 (diagrams) built** — `pipeline/diagrams.py` renders 1920×1080 animated diagram clips + `manifest.json`; needs visual polish (sizes, label overlap)
+- ✅ **Pipeline steps 1–5 built** — `write_script.py`, `voice.py` (Kokoro), `footage.py` (Wikimedia + Pixabay), `diagrams.py`, `assemble.py`
 - ❌ **Step 6 (upload)** — not built; needs Google Cloud OAuth client from Brandon
 - ❌ **Scheduler (launchd)** — not built
-- ❌ **NEXT-TASK steps 4–13 (per-section rebuild)** — not started, all ⬜ in `docs/NEXT-TASK.md`
-- ❌ **Channel art** — not created; channel name/method/voice choice never formally recorded (the work was built anyway — Kokoro `bm_george`, Wikimedia+Pixabay footage)
+- ❌ **Channel art** — not created; channel name/method/voice choice never formally recorded (work built using Kokoro `bm_george`, Wikimedia+Pixabay footage)
 
 ### The gap
 
